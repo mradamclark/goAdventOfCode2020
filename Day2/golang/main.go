@@ -16,37 +16,43 @@ type policy struct {
 
 func newPolicy(policyDefinition string) *policy {
 	var p policy
-	_, err := fmt.Sscanf(policyDefinition, "%d-%d %s", &p.min, &p.max, &p.value)
+	_, err := fmt.Sscanf(policyDefinition, "%d-%d %v", &p.min, &p.max, &p.value)
 	check(err)
 
 	return &p
 }
 
+type validator func(pwd string, rule policy) bool
+
 func main() {
+	//pwdInput, err := readLines("../data/test.txt")
 	pwdInput, err := readLines("../data/input.txt")
 	check(err)
 
-	fmt.Println("\n\nPart One - Policy Violations: ", countValidPasswords(pwdInput))
+	fmt.Println(
+		"\n\nPart One - Valid Passwords (Schema 1): ",
+		countValidPasswords(pwdInput, passwordValidatorPart1))
+
+	fmt.Println(
+		"\nPart Two - Valid Passwords (Schema 2)",
+		countValidPasswords(pwdInput, passwordValidatorPart2))
 }
 
-func countValidPasswords(input []string) int {
+func countValidPasswords(input []string, tester validator) int {
 	passes := 0
 
 	for _, entry := range input {
 		rule, pwd, err := parseInputEntry(entry)
 		check(err)
 
-		if passwordValidator(pwd, *rule) {
+		if tester(pwd, *rule) {
 			passes += 1
 		}
-
-		//fmt.Printf("\nPolicy: %v, Pwd: %s", rule, pwd)
 	}
 	return passes
 }
 
-func passwordValidator(pwd string, rule policy) bool {
-
+func passwordValidatorPart1(pwd string, rule policy) bool {
 	count := strings.Count(pwd, rule.value)
 
 	if count < rule.min || count > rule.max {
@@ -54,6 +60,24 @@ func passwordValidator(pwd string, rule policy) bool {
 	}
 
 	return true
+}
+
+func passwordValidatorPart2(pwd string, rule policy) bool {
+	first := false
+	second := false
+
+	if len(pwd) >= rule.min {
+		//fmt.Print("\nFirst chara: ",string(pwd[rule.min]))
+		first = rule.value == string(pwd[rule.min])
+	}
+
+	if len(pwd) >= rule.max {
+		//fmt.Print(", Second char: ",string(pwd[rule.max]))
+		second = rule.value == string(pwd[rule.max])
+	}
+
+	//fmt.Printf("\nPolicy: %v, Pwd: %s, %v", rule, pwd, (first && !second) || (!first && second))
+	return (first && !second) || (!first && second)
 }
 
 func parseInputEntry(entry string) (*policy, string, error) {
