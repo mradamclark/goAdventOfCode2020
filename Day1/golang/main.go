@@ -15,14 +15,14 @@ func main() {
 	//data = []string{"1721", "979", "366", "299", "675", "1456"}
 
 	fmt.Println("Part 1...")
-	solvePart1(data)
+	solvePart1(data, 2020)
 
 	fmt.Println("Part 2...")
-	solvePart2(data)
+	solvePart2(data, 2020)
 
 }
 
-func solvePart1(data []string) {
+func solvePart1(data []string, resultToFind int) {
 	for i := 0; i < len(data); i++ {
 		for j := i + 1; j < len(data); j++ {
 			first, _ := strconv.Atoi(data[i])
@@ -30,7 +30,7 @@ func solvePart1(data []string) {
 
 			var addResult = first + second
 
-			if 2020 == addResult {
+			if resultToFind == addResult {
 				fmt.Printf("Success %d * %d = %d\n", first, second, first*second)
 				return
 			}
@@ -40,7 +40,7 @@ func solvePart1(data []string) {
 	fmt.Println("Failure, nothing in this data set")
 }
 
-func solvePart2(data []string) {
+func solvePart2(data []string, resultToFind int) {
 	for i := 0; i < len(data); i++ {
 		for j := i + 1; j < len(data); j++ {
 			for k := j + 1; k < len(data); k++ {
@@ -50,7 +50,7 @@ func solvePart2(data []string) {
 
 				var addResult = first + second + third
 
-				if 2020 == addResult {
+				if resultToFind == addResult {
 					fmt.Printf("Success %d * %d * %d = %d\n\n", first, second, third, first*second)
 					return
 				}
