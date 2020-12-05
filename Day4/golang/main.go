@@ -9,17 +9,17 @@ import (
 	"strings"
 )
 
-var requiredFields = []string{
-	"pid",
-	//"cid", //countryID is not required
-	"byr",
-	"iyr",
-	"eyr",
-	"hgt",
-	"hcl",
-	"ecl"}
-
 func main() {
+	var requiredFields = []string{
+		"pid",
+		//"cid", //countryID is not required
+		"byr",
+		"iyr",
+		"eyr",
+		"hgt",
+		"hcl",
+		"ecl"}
+
 	//fileWithPath := "/Users/adamclark/dev/projects/goAdventOfCode/Day4/data/test.dat"
 	fileWithPath := "/Users/adamclark/dev/projects/goAdventOfCode/Day4/data/input.dat"
 	file, err := os.Open(fileWithPath)
@@ -39,7 +39,7 @@ func main() {
 
 	valid := false
 	for _, passport := range passports {
-		valid = validatePassport(passport)
+		valid = validatePassport(passport, requiredFields)
 		if valid {
 			validPassports++
 		}
@@ -48,7 +48,7 @@ func main() {
 	fmt.Println("Number of valid passports: ", validPassports)
 }
 
-func validatePassport(passport map[string]string) bool {
+func validatePassport(passport map[string]string, requiredFields []string) bool {
 	keys := getMapKeys(passport)
 	return containsAllKeys(keys, requiredFields)
 }
